@@ -1,9 +1,12 @@
 from flask import Flask
+from flask_cors import CORS, cross_origin
 import subprocess
 import os
 from pathlib import Path
 
 app = Flask("ServerMon")
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def hello_world():
