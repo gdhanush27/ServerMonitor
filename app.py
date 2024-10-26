@@ -40,5 +40,13 @@ def storage():
 
     return {"Total":tot,"Percent":percent}
 
+@app.route("/log")
+def getlog():
+    f = open("/home/harshan/reached_temp","r")
+    logs = f.readlines()
+    f.close()
+
+    return {"Logs":logs}
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
