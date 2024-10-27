@@ -90,12 +90,12 @@ def cpu_temp():
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
             output = result.stdout
-            temperatures = []
+            temperatures = None
             for line in output.splitlines()[1:]:  # Skip header
                 if line.strip():  # If line is not empty
                     temp_kelvin = int(line.strip())
-                    temp_celsius = (temp_kelvin / 10) - 273.15  # Convert from tenths of Kelvin to Celsius
-                    temperatures.append(f"{temp_celsius:.2f}°C")
+                    temp_celsius =temp_kelvin - 273.15  # Convert from tenths of Kelvin to Celsius
+                    temperatures = f"{temp_celsius:.2f}°C"
             if temperatures:
                 return {"CPU_Temps": temperatures}
             return {"ERROR": "Temperature data not found"}
