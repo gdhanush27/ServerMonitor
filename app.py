@@ -76,8 +76,8 @@ def cpu_temp():
             output = result.stdout
             for line in output.splitlines():
                 if "Package id 0" in line or "Tdie" in line:  # Adjust according to your CPU (AMD/Intel)
-                    temp = line.split()[-2]  # Extract temperature value
-                    return {"CPU_Temp": f"{temp}°C"}
+                    temp = line.split()[3]  # Extract temperature value
+                    return {"CPU_Temp": f"{temp[1:]}"}
             return {"ERROR": "Temperature data not found"}
         except Exception as e:
             return {"ERROR": str(e)}
