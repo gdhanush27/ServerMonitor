@@ -9,7 +9,6 @@ app = Flask("ServerMon")
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
@@ -20,20 +19,18 @@ def heartbeat():
 
 @app.route("/ssdtemp")
 def ssd_temp():
-    try:
-        smartctl = Smartctl()
-        devices = smartctl.devices
-        if len(devices) > 0:
-            for device in devices:
-                # Assuming your SSD is the first device; modify as needed
-                if device.temperature:
-                    return {"Temp": f"{device.temperature}°C"}
-                else:
-                    return {"ERROR": "Temperature data not available for this SSD"}
-        else:
-            return {"ERROR": "No devices found"}
-    except Exception as e:
-        return {"ERROR": str(e)}
+    cwd = os.getcwd()
+    file = "/tmp/ssd_temp"
+    relpath = os.path.relpath(file, cwd)
+
+    if not os.path.exists(relpath):
+        print(relpath)
+        return {"ERROR": "Path does not exist"}
+    
+    with open(relpath) as f:
+        val = f.readline()[:-1]
+    
+    return {"Temp": val}
 
 @app.route("/storage")
 def storage():
@@ -44,7 +41,7 @@ def storage():
         out = subprocess.run(['df', '/', '--output=size,pcent'], stdout=subprocess.PIPE).stdout.decode('utf-8')
         tot, percent = out.split("\n")[1].split()
         return {"Total": tot, "Percent": percent}
-
+    
     elif os_name == "Windows":
         # For Windows
         result = subprocess.run(['wmic', 'logicaldisk', 'get', 'size,freespace,caption'], stdout=subprocess.PIPE)
@@ -65,6 +62,45 @@ def storage():
                 })
 
         return {"Storage": storage_info}
+
+    return {"ERROR": "Unsupported OS"}
+
+@app.route("/cputemp")
+def cpu_temp():
+    os_name = platform.system()
+
+    if os_name == "Linux":
+        try:
+            # Try to get CPU temperature using `sensors` command
+            result = subprocess.run(['sensors'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            output = result.stdout
+            for line in output.splitlines():
+                if "Package id 0" in line or "Tdie" in line:  # Adjust according to your CPU (AMD/Intel)
+                    temp = line.split()[-2]  # Extract temperature value
+                    return {"CPU_Temp": f"{temp}°C"}
+            return {"ERROR": "Temperature data not found"}
+        except Exception as e:
+            return {"ERROR": str(e)}
+
+    elif os_name == "Windows":
+        try:
+            # Use WMIC to get CPU temperature
+            result = subprocess.run(
+                ['wmic', 'path', 'Win32_PerfFormattedData_Counters_ThermalZoneInformation', 'get', 'Temperature'],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            )
+            output = result.stdout
+            temperatures = []
+            for line in output.splitlines()[1:]:  # Skip header
+                if line.strip():  # If line is not empty
+                    temp_kelvin = int(line.strip())
+                    temp_celsius = (temp_kelvin / 10) - 273.15  # Convert from tenths of Kelvin to Celsius
+                    temperatures.append(f"{temp_celsius:.2f}°C")
+            if temperatures:
+                return {"CPU_Temps": temperatures}
+            return {"ERROR": "Temperature data not found"}
+        except Exception as e:
+            return {"ERROR": str(e)}
 
     return {"ERROR": "Unsupported OS"}
 
