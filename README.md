@@ -17,7 +17,7 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
 ** Arch **
 `sudo pacman -S docker`
 
-3. Download the latest docker image from the releases page 
+3. Download the latest docker image from the [releases page](https://github.com/SreeHarshan/ServerMonitor/releases/)
 
 4. Load the docker image
 ```bash
