@@ -12,22 +12,26 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
 
 ## Running the server
 1. Install docker, if it is not installed
-** Ubuntu **
-`sudo apt install docker`
-** Arch **
-`sudo pacman -S docker`
+* Ubuntu
+    ```bash
+    sudo apt install docker
+    ```
+* Arch
+    ```bash
+    sudo pacman -S docker
+    ```
 
 3. Download the latest docker image from the [releases page](https://github.com/SreeHarshan/ServerMonitor/releases/)
 
 4. Load the docker image
-```bash
-docker load -i <docker-file>
-```
+    ```bash
+    docker load -i <docker-file>
+    ```
 
 5. Run the docker image
-```bash
-docker run --network host -p 8000:8000 -v /tmp:/tmp -v /home:/home <docker-image-name>
-```
+    ```bash
+    docker run --network host -p 8000:8000 -v /tmp:/tmp -v /home:/home <docker-image-name>
+    ```
 
 **Note**
 - I have a cron script running that will log the temps of my ssd in `/tmp/sddtemp`, under the hood uses `smartmontools` which is used by api `ssdtemp`.
@@ -38,10 +42,10 @@ docker run --network host -p 8000:8000 -v /tmp:/tmp -v /home:/home <docker-image
 
 1. **Clone the Repository**:
 
-```bash
-git clone https://github.com/SreeHarshan/ServerMonitor.git
-cd ServerMon
-```
+    ```bash
+    git clone https://github.com/SreeHarshan/ServerMonitor.git
+    cd ServerMon
+    ```
 2. **Install smartmontools**:
 
     - *For Arch Linux*:
@@ -56,14 +60,14 @@ cd ServerMon
     ```
    
 3. Install the requirements
-```bash
-pip install -e requirements
-```
+    ```bash
+    pip install -e requirements
+    ```
 
 4. Build the docker image 
-```bash
-docker build -t <username>/<docker-image-name>:<version> .
-```
+    ```bash
+    docker build -t <username>/<docker-image-name>:<version> .
+    ```
 
 5. Perform steps from [Running the server](https://github.com/SreeHarshan/ServerMonitor/edit/main/README.md#running-the-server)
 
