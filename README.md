@@ -68,8 +68,12 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
     ```bash
     docker build -t <username>/<docker-image-name>:<version> .
     ```
+5. Save the docker image to a file
+   ```bash
+   docker image save <image-name> -o <tar-file-name>
+   ```
 
-5. Perform steps from [Running the server](https://github.com/SreeHarshan/ServerMonitor/edit/main/README.md#running-the-server)
+6. Perform steps from [Running the server](https://github.com/SreeHarshan/ServerMonitor/edit/main/README.md#running-the-server)
 
 ## Future Work
 * Add api's to add .torrent file or magnet link to download a torrent.
