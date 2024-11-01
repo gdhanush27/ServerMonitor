@@ -1,33 +1,45 @@
 # ServerMon
 
-A Flask-based API to monitor system resources, including CPU and storage usage and temperature, across multiple operating systems (`Linux`, `macOS`, and `Windows`).
+A Flask-based API to monitor system resources, including CPU and storage usage and temperature and perform some admin actions.
 
 ## Features
+- **Hello World**: Hello world :)
 - **Heartbeat**: A simple API to check server status.
-- **CPU Temperature**: Retrieves the CPU temperature using `sensors` on Linux or `WMIC` on Windows.
+- **CPU Temperature**: Retrieves the CPU temperature using `sensors` on Linux. 
 - **Storage Usage**: Fetches total storage capacity and used percentage.
 - **Storage Drive Temperature**: Uses `smartctl` (part of `smartmontools`) to retrieve drive temperature data.
+- **Sleep**: Restart the server for `n` seconds.
 
-## Prerequisites
-Ensure you have the following installed:
-- **Python 3.x**
-- **Flask** and **Flask-CORS** Python libraries
-- **smartmontools**:
-  - **Linux**: Needed for storage temperature monitoring.
-  - **Windows**: Ensure `smartctl` is accessible in your `PATH`.
+## Running the server
+1. Install docker, if it is not installed
+** Ubuntu **
+`sudo apt install docker`
+** Arch **
+`sudo pacman -S docker`
 
-### Install Dependencies
+3. Download the latest docker image from the releases page 
 
+4. Load the docker image
 ```bash
-pip install -r requirements.txt
+docker load -i <docker-file>
 ```
 
-## Setup Instructions
+5. Run the docker image
+```bash
+docker run --network host -p 8000:8000 -v /tmp:/tmp -v /home:/home <docker-image-name>
+```
+
+**Note**
+- I have a cron script running that will log the temps of my ssd in `/tmp/sddtemp`, under the hood uses `smartmontools` which is used by api `ssdtemp`.
+- The server runs on port 8000 and ip of 0.0.0.0, if you want to change the port or ip of server you can pass the port, ip as an env variable to docker by adding `docker run -e PORT=xxxx HOST=xxx.xxx.x.x ...`.
+- I also have a cron script running that automatically restarts the server when the ssd temps reaches a threshold, writing a log into file at `/home/harshan/reachedtemp` which is being read by the api `/logs`.
+
+## Build the docker file 
 
 1. **Clone the Repository**:
 
 ```bash
-git clone https://github.com/gdhanush27/ServerMonitor.git
+git clone https://github.com/SreeHarshan/ServerMonitor.git
 cd ServerMon
 ```
 2. **Install smartmontools**:
@@ -35,52 +47,27 @@ cd ServerMon
     - *For Arch Linux*:
 
     ```bash
-
     sudo pacman -S smartmontools
     ```
     - *For Debian/Ubuntu*:
 
     ```bash
-
     sudo apt update && sudo apt install smartmontools
     ```
-    - *For Windows*:
-        - Download smartmontools from https://www.smartmontools.org/.
-        - Add the smartctl.exe binary to your system PATH.
-
-## Run the Application:
-
+   
+3. Install the requirements
 ```bash
-python app.py
+pip install -e requirements
 ```
-The server will start at http://0.0.0.0:5000 by default.
 
-## API Endpoints
+4. Build the docker image 
+```bash
+docker build -t <username>/<docker-image-name>:<version> .
+```
 
-1. **Heartbeat**
-    - Endpoint: `/heartbeat`
-    - Method: `GET`
-    - Description: Returns a simple heartbeat JSON to check if the server is running.
+5. Perform steps from [Running the server](https://github.com/SreeHarshan/ServerMonitor/edit/main/README.md#running-the-server)
 
-2. **CPU Temperature**
-    - Endpoint: `/cputemp`
-    - Method: `GET`
-    - Description: Retrieves the CPU temperature.
-    - OS Support: Linux (requires `sensors`), Windows (uses `WMIC`).
-
-3. **Storage Usage**
-    - Endpoint: `/storage`
-    - Method: `GET`
-    - Description: Provides total storage capacity and usage percentage.
-    - OS Support: Linux/macOS (uses `df`), Windows (uses `WMIC`).
-
-4. **Storage Drive Temperature** ( *Yet to be released* )
-    - Endpoint: `/storagetemp`
-    - Method: `GET`
-    - Description: Retrieves the temperature of each storage drive using smartctl.
-    - OS Support: Linux, Windows (both require `smartmontools`).
-
-## Notes
-
-- The `storagetemp` endpoint requires `smartmontools`, which may need root privileges to access drive data.
-- The `cputemp` endpoint on Linux depends on `sensors`, which can be installed with `sudo pacman -S lm_sensors` on Arch or `sudo apt install lm-sensors` on Debian/Ubuntu. `Run sudo sensors-detect` to configure.
+## Future Work
+* Add api's to add .torrent file or magnet link to download a torrent.
+* Fetch the progress of the torrent.
+* Move the torrent to designated folder after complete.
