@@ -77,6 +77,7 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
 6. Perform steps from [Running the server](https://github.com/SreeHarshan/ServerMonitor/edit/main/README.md#running-the-server)
 
 ## Future Work
+* Integrated the cronjob scripts into this repo
 * Add api's to add .torrent file or magnet link to download a torrent.
 * Fetch the progress of the torrent.
 * Move the torrent to designated folder after complete.
