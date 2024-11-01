@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from flask_cors import CORS, cross_origin
 import subprocess
 import os
@@ -32,6 +32,11 @@ def ssd_temp():
 
     return {"Temp":val}
 
+@app.route("/cputemp")
+def cpu_temp():
+    out = subprocess.run(['cat','/sys/class/thermal/thermal_zone6/temp'],stdout=subprocess.PIPE).stdout.decode('utf-8')
+    return {"Temp":out}
+
 @app.route("/storage")
 def storage():
     out = subprocess.run(['df','/','--output=size,pcent'],stdout=subprocess.PIPE).stdout.decode('utf-8')
@@ -47,6 +52,16 @@ def getlog():
     f.close()
 
     return {"Logs":logs}
+
+@app.route("/addtorrent")
+def addtorrent():
+    pass
+
+@app.route("/sleep")
+def sleep():
+    time = request.args.get('time')
+    out = os.system("rtcwake -m off -s {}".format(time))
+    return {"Output":"Success" if out == 0 else "Failed"}
 
 if __name__ == "__main__":
     app.run()
