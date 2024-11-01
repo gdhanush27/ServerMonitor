@@ -5,7 +5,7 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
 ## Features
 - **Hello World**: Hello world :)
 - **Heartbeat**: A simple API to check server status.
-- **CPU Temperature**: Retrieves the CPU temperature using `sensors` on Linux. 
+- **CPU Temperature**: Retrieves the CPU temperature using hardcoded cpu path.
 - **Storage Usage**: Fetches total storage capacity and used percentage.
 - **Storage Drive Temperature**: Uses `smartctl` (part of `smartmontools`) to retrieve drive temperature data.
 - **Sleep**: Restart the server for `n` seconds.
@@ -37,6 +37,7 @@ A Flask-based API to monitor system resources, including CPU and storage usage a
 - I have a cron script running that will log the temps of my ssd in `/tmp/sddtemp`, under the hood uses `smartmontools` which is used by api `ssdtemp`.
 - The server runs on port 8000 and ip of 0.0.0.0, if you want to change the port or ip of server you can pass the port, ip as an env variable to docker by adding `docker run -e PORT=xxxx HOST=xxx.xxx.x.x ...`.
 - I also have a cron script running that automatically restarts the server when the ssd temps reaches a threshold, writing a log into file at `/home/harshan/reachedtemp` which is being read by the api `/logs`.
+- The cpu temps is being read at `/sys/class/thermal/thermal_zone6/temp` may vary from device to device.
 
 ## Build the docker file 
 
