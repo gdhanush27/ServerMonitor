@@ -3,7 +3,6 @@
 A Flask-based API to monitor system resources, including CPU and storage usage and temperature and perform some admin actions.
 
 ## Features
-- **Hello World**: Hello world :)
 - **Heartbeat**: A simple API to check server status.
 - **CPU Temperature**: Retrieves the CPU temperature using hardcoded cpu path.
 - **Storage Usage**: Fetches total storage capacity and used percentage.
